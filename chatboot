@@ -1,0 +1,318 @@
+import streamlit as st
+import time
+
+st.set_page_config(
+    page_title="MyAi",
+    page_icon="🤖",
+    layout="wide"
+)
+
+st.markdown("""
+<style>
+body {
+    background-color: #f4f4f5;
+    color: #111827;
+}
+.block-container {
+    max-width: 950px;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+.sidebar .sidebar-content {
+    background-color: #020617;
+}
+.left-menu-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+.chat-bubble-user {
+    background-color: #2563eb;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 12px;
+    margin: 4px 0;
+    align-self: flex-end;
+    max-width: 80%;
+}
+.chat-bubble-bot {
+    background-color: #e5e7eb;
+    color: #111827;
+    padding: 8px 12px;
+    border-radius: 12px;
+    margin: 4px 0;
+    align-self: flex-start;
+    max-width: 80%;
+}
+.chat-container {
+    display: flex;
+    flex-direction: column;
+}
+.version-tag {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid #d4d4d8;
+    display: inline-block;
+    margin-bottom: 6px;
+}
+.pricing-card {
+    border: 1px solid #d4d4d8;
+    border-radius: 12px;
+    padding: 12px;
+}
+</style>
+""", unsafe_allow_html=True)
+
+if "users" not in st.session_state:
+    # simple in-memory user store: {username: password}
+    st.session_state.users = {}
+
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+
+if "username" not in st.session_state:
+    st.session_state.username = ""
+
+if "chats_by_user" not in st.session_state:
+    st.session_state.chats_by_user = {}
+
+if "selected_version" not in st.session_state:
+    st.session_state.selected_version = "Mini"
+
+if "show_pricing" not in st.session_state:
+    st.session_state.show_pricing = False
+
+def is_math_expression(text: str) -> bool:
+    allowed = set("0123456789+-*/(). ")
+    return text and all(c in allowed for c in text)
+
+
+def handle_user_message(text: str) -> str:
+    text = text.strip()
+
+    # Arithmetic
+    if is_math_expression(text):
+        try:
+            result = eval(text, {"_builtins_": {}}, {})
+            return f"Result: {text} = {result}"
+        except Exception:
+            return "Hmm, yeh maths expression samajh nahi aaya mujhe."
+
+    # "Heavy" message check (length based + few keywords)
+    heavy_keywords = ["politics", "religion", "hack", "exploit", "terror", "bypass"]
+    if len(text) > 150 or any(k in text.lower() for k in heavy_keywords):
+        return "I'm not able to answer this."
+
+    # Light small talk
+    return f"Thik hai, samajh gaya \n\nYou said: \"{text}\""
+
+def login_page():
+    st.title("Nexus AI Login")
+
+    tab_login, tab_signup = st.tabs(["Sign In", "Sign Up"])
+
+    # ---- Sign In ----
+    with tab_login:
+        st.write("Username aur password se login karein.")
+        username = st.text_input("Username", key="login_username")
+        password = st.text_input("Password", type="password", key="login_password")
+
+        if st.button("Sign In", use_container_width=True):
+            if not username or not password:
+                st.error("Please fill both username and password.")
+            elif username not in st.session_state.users:
+                st.error("User not found. Pehle sign up karein.")
+            elif st.session_state.users[username] != password:
+                st.error("Wrong password.")
+            else:
+                st.session_state.logged_in = True
+                st.session_state.username = username
+                if username not in st.session_state.chats_by_user:
+                    st.session_state.chats_by_user[username] = []
+                st.success("Logged in successfully ")
+                st.rerun()
+
+    with tab_signup:
+        st.write("Naya account banayein.")
+        su_username = st.text_input("New Username", key="signup_username")
+        su_password = st.text_input("New Password", type="password", key="signup_password")
+
+        if st.button("Sign Up", use_container_width=True):
+            if not su_username or not su_password:
+                st.error("Please fill both username and password.")
+            elif su_username in st.session_state.users:
+                st.error("Ye username already exist karta hai.")
+            else:
+                st.session_state.users[su_username] = su_password
+                st.success("Account created! Ab Sign In tab se login karein.")
+
+    st.markdown("---")
+    st.write("Or continue with:")
+    c1, c2 = st.columns(2)
+    with c1:
+        if st.button(" Continue with Google", use_container_width=True):
+            st.session_state.logged_in = True
+            st.session_state.username = "google_user"
+            st.session_state.chats_by_user.setdefault("google_user", [])
+            st.rerun()
+    with c2:
+        if st.button(" Continue with Facebook", use_container_width=True):
+            st.session_state.logged_in = True
+            st.session_state.username = "facebook_user"
+            st.session_state.chats_by_user.setdefault("facebook_user", [])
+            st.rerun()
+
+def dashboard_page():
+    user = st.session_state.username
+    chats = st.session_state.chats_by_user.setdefault(user, [])
+
+    version = st.session_state.selected_version
+    version_colors = {
+        "Mini": "#f4f4f5",
+        "Learning": "#e0f2fe",
+        "Deep Research": "#fef9c3",
+        "Pro": "#fee2e2",
+    }
+    bg = version_colors.get(version, "#f4f4f5")
+
+    st.markdown(
+        f"<style>body {{ background-color: {bg}; }}</style>",
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        f"### MyAi -Logged in as {user}",
+    )
+    
+    left_col, right_col = st.columns([1, 2])
+
+    with left_col:
+        st.markdown("#### Menu")
+        st.markdown("---")
+        st.markdown("*Chat Controls*")
+        if st.button(" New Chat", use_container_width=True):
+            st.session_state.chats_by_user[user] = []
+            st.rerun()
+
+        st.markdown("*Current Version*")
+        st.write(version)
+
+        st.markdown("---")
+        st.markdown("*Account*")
+        if st.button("Logout", use_container_width=True):
+            st.session_state.logged_in = False
+            st.session_state.username = ""
+            st.rerun()
+
+    with right_col:
+        # Version selector
+        st.markdown("##### Mode / Version")
+        v1, v2, v3, v4 = st.columns(4)
+        versions = ["Mini", "Learning", "Deep Research", "Pro"]
+
+        for col, v in zip([v1, v2, v3, v4], versions):
+            with col:
+                if st.button(
+                    v,
+                    use_container_width=True,
+                    type="primary" if version == v else "secondary",
+                ):
+                    st.session_state.selected_version = v
+                    if v == "Pro":
+                        st.session_state.show_pricing = True
+                    else:
+                        st.session_state.show_pricing = False
+                    st.rerun()
+
+        st.markdown(
+            f"<div class='version-tag'>Active: {version}</div>",
+            unsafe_allow_html=True,
+        )
+        st.markdown("---")
+        
+        if st.session_state.show_pricing and version == "Pro":
+            pricing_section()
+        else:
+            chat_section(user)
+
+
+def pricing_section():
+    st.markdown("### 💼 Pro Version Pricing")
+    st.write(
+        "Pro mode me zyada deep reasoning, longer thinking, aur priority responses milenge (demo)."
+    )
+
+    c1, c2, c3 = st.columns(3)
+
+    with c1:
+        st.markdown("<div class='pricing-card'>", unsafe_allow_html=True)
+        st.markdown("*Starter*")
+        st.write("$5 / month")
+        st.write("- Basic usage\n- Limited history")
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    with c2:
+        st.markdown("<div class='pricing-card'>", unsafe_allow_html=True)
+        st.markdown("*Pro*")
+        st.write("$15 / month")
+        st.write("- All features\n- Priority support\n- Longer chats")
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    with c3:
+        st.markdown("<div class='pricing-card'>", unsafe_allow_html=True)
+        st.markdown("*Team*")
+        st.write("$30 / month")
+        st.write("- Multiple users\n- Shared spaces")
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    st.markdown("---")
+    if st.button("⬅ Back to chat", use_container_width=True):
+        st.session_state.show_pricing = False
+        st.rerun()
+
+
+def chat_section(user: str):
+    chats = st.session_state.chats_by_user[user]
+
+    # --- File uploader on top ---
+    file = st.file_uploader("Attach file (optional)", type=["pdf", "txt", "md"])
+    if file is not None:
+        st.info(f"Attached: {file.name}")
+
+    st.markdown("### Chat")
+    st.markdown("<div class='chat-container'>", unsafe_allow_html=True)
+    for msg in chats[-20:]:
+        if msg["role"] == "user":
+            st.markdown(
+                f"<div class='chat-bubble-user'>{msg['content']}</div>",
+                unsafe_allow_html=True,
+            )
+        else:
+            st.markdown(
+                f"<div class='chat-bubble-bot'>{msg['content']}</div>",
+                unsafe_allow_html=True,
+            )
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    user_text = st.text_input(
+        "Type your message",
+        key="chat_input",
+        placeholder="Choti moti baat karein, ya simple maths try karein (2+2*3)...",
+    )
+
+    if st.button("Send", use_container_width=True):
+        if user_text.strip():
+            # store user message
+            chats.append({"role": "user", "content": user_text})
+            # generate bot reply
+            reply = handle_user_message(user_text)
+            time.sleep(0.3)
+            chats.append({"role": "bot", "content": reply})
+            st.session_state.chats_by_user[user] = chats
+            st.rerun()
+
+if not st.session_state.logged_in:
+    login_page()
+else:
+    dashboard_page()
