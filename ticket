@@ -1,0 +1,149 @@
+name = "john"
+print(25)
+print("hello")
+name = input("Enter shikha:")
+print("shikha")
+a=9
+b=4
+print(4+5)
+age =int(input("Enter your age:"))
+if age > 18:
+    print("you can watch the movie with perents")
+else:
+    print("not allowed")
+    age =int(input("Enter your age: "))
+ticket = True
+if age > 18:
+    print("you can watch the movie")
+    if ticket == True:
+        print("you can go inside  ")
+elif age < 15:
+    print("you can watch the movie with perents")
+else:  
+    print("Not allowed")
+
+    age =int(input("Enter your age: "))
+ticket = input("Enter 0 for True and 1 for False")
+flag = bool(ticket)
+if age > 18:
+    print("you can watch the movie")
+    if ticket == True:
+        print("you can go inside  ")
+elif age < 15:
+    print("you can watch the movie with perents")
+else:  
+    print("Not allowed")
+
+age = 18
+if age > 20 and age <15:
+    print("Both Are True ")
+else :
+     print("No any one was false ")
+if age  <10  or age >15:
+    print("Both Are True ")
+    ticket = False
+
+if not ticket:
+    print("Access denisd")
+    
+for i in range(5):
+    print("1")
+for i in range(2,10,2):
+    print(i)
+    num = int(input("Enter a number: "))
+rev = 0
+
+# run loop equal to number of digits
+for i in range(len(str(num))):
+    digit = num % 10
+    rev = rev * 10 + digit
+    num //= 10
+
+print("Reversed:", rev)
+for i in range(1,10,2):
+    print(i)
+num = int(input("Enter a number: "))
+rev = 0
+for i in range(len(str(num))):
+    digit = num % 10
+    rev = rev * 10 + digit
+    num //= 10
+
+print(rev)
+
+for i in range(1,5+1):
+    print("*" *i)
+for i in range(10,2,-2):
+    print(i)
+year = int(input("Enter a year: "))
+
+if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):
+    print(year, "is a leap year")
+else:
+    print(year, "is not a leap year")
+for i in range(5):
+    print("*", end="")
+num = float(input("Enter a number: "))
+
+if num > 0:
+    print("The number is positive.")
+elif num < 0:
+    print("The number is negative.")
+else:
+    print("The number is zero.")
+    
+count = 1 
+while count <=5:
+   print("HP")
+    count += 1
+    
+print("""
+1. Addition
+2. Substraction
+3. Multiplication
+4. Exit
+""")
+choice = input("Enter Your choice :")
+if choice == "1":
+    num1 = int(input("Enter Number 1 "))
+    num2 = int(input("Enter Number 2 "))
+    print("Addition is ",num1 + num2 )
+elif choice == "2":
+    num1 = int(input("Enter Number 1 "))
+    num2 = int(input("Enter Number 2 "))
+    print("Substraction is ",num1 - num2 )
+elif choice == "3":
+    num1 = int(input("Enter Number 1 "))
+    num2 = int(input("Enter Number 2 "))
+    print("Multiplication is ",num1 * num2 )
+elif choice == "4":
+    num1 = int(input("Enter Number 1 "))
+    num2 = int(input("Enter Number 2 "))
+    print("Divition is ",num1 / num2 )
+elif choice ==  "4" :
+      break
+else :
+    print("Invalid")
+except:
+ print("I am Except")
+for i in range(1, 10):
+ if i == 3 :
+continue
+    print(i)
+
+balance = 5000
+pin = 1234
+
+user_pin = int(input("Enter your PIN: "))
+
+if user_pin == pin: 
+    amount = int(input("Enter Amount: "))
+
+if amount <= balance:
+        balance -= amount
+        print("Withdrawal successful")
+        print("Remaining Balance:", balance)
+else:
+        print("Insufficient Balance")
+else:
+    print("Incorrect PIN")
