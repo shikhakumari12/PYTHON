@@ -1,0 +1,65 @@
+def print_name():
+    print("TOM")
+def print_name():
+    print("TOM")
+def print_name(a):
+    print(f'"HI", {a}')
+    print_name("tom")
+print_name("jack")
+def multi_arg(*arg):
+    print(arg)
+def add(a,b,c):
+    return a + b + c
+    add(1,3,1)
+def student(**info):
+    for key , value in info.items():
+        print (key, ":" ,value)
+tom_details = student(name="TOM", contavt= 123)
+def myfunc(a,b):
+    return a+b , a-b
+myfunc(1,3)
+double = lambda x : x *2
+print (double(677))
+import tools
+!pip install tools
+def greet(name):
+    return f"Hello, {name}!"
+
+print(greet("Jack"))
+import math
+math.sqrt(10)
+from math import sqrt
+sqrt(25)
+import random as r
+r.randint(1,20)
+import datetime as d
+print(d.datetime.today())
+
+try:
+    no = int(input("Enter a number: "))
+    print(10 / no)
+
+except ValueError:
+    print("Error: Please enter a valid integer.")
+
+except ZeroDivisionError:
+    print("Error: Cannot divide by zero.")
+no = int(input("Enter a n umber"))
+print = (10/no)
+try :
+    no = int(input("Enter a n umber"))
+    x = (10/0)
+except  ZeroDivisionError:
+      print ("dont enter 0")
+except ValueError:
+    print("Enter only Int")
+try:
+    no = int(input("Enter a number: "))
+    x = 10 / no
+    print("Result:", x)
+
+except ZeroDivisionError:
+    print("Don't enter 0")
+
+except ValueError:
+    print("Enter only integers")
