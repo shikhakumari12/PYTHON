@@ -1,0 +1,36 @@
+print("Hello")
+#pip install matplotlib
+import matplotlib.pyplot as plt
+
+x = [1,2,3,4,5]
+y = [10,20,30,40,50]
+
+plt.plot(x,y)
+plt.title("Student hrs vs mark")
+plt.xlabel("Second")
+plt.ylabel("time")
+
+subject = ["M1", "M2", "Chem", "Phy"]
+marks = ["12", "04", "18", "20"]
+
+plt.bar(subject,marks)
+plt.title("Student hrs vs mark")
+plt.xlabel("SUB")
+plt.ylabel("Marks")
+plt.show()
+
+object = ["Pen", "Marker", "Book", "Copy"]
+count = ["2o", "14", "18", "13"]
+
+plt.bar(object,count)
+plt.title("Student hrs vs mark")
+plt.xlabel("object")
+plt.ylabel("count")
+plt.show()
+
+marks = [1,2,3,4,5,6,7,8,9,10]
+
+plt.pie(marks)
+plt.title("Student hrs vs mark")
+
+plt.show()
