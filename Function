@@ -1,0 +1,35 @@
+mylist = ["apple", "banana", "orenge"]
+
+print(type(mylist))        
+print(mylist[0])          
+print(mylist[1:2])         
+print(mylist[1:])          
+
+mylist.append("cherry")    
+print(mylist)
+
+mylist.insert(1, "bluberry")  
+print(mylist)
+
+print(mylist.count("apple"))  
+
+print(mylist)
+
+mylist.sort()              
+print(mylist)
+
+mylist.pop(1)              
+text = "Hello VGU"
+
+print(text[0:5])          
+print(text.find("VGU"))    
+print(text.replace("VGU", "VGU GUYS"))
+
+text = "Hello VGU"
+print(text.split())        
+text2 = ['Hello', ' VGU']
+print(text2)
+
+print("".join(text2))      
+result = [char.upper() for char in "abc"]
+print(result)            
