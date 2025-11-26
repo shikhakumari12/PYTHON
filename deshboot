@@ -1,0 +1,52 @@
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+
+st.title("Streamlit App of VGU")
+st.text("Welcome to our dashboard")
+st.header("I am a header")
+st.write("You can write:", 10 + 5)
+name = st.text_input("Enter your name:")
+age = st.number_input("Enter your age:")
+st.write("Your name is:", name, "Your age is:", age)
+
+
+course = st.selectbox("Enter your course:", ["BCA", "MCA", "B.TECH"])
+st.write("Selected course:", course)
+
+if st.button("Click ME"):
+    st.success("Clicked Button")
+
+file = st.file_uploader("Upload your file")
+
+if file:
+    content = file.read()
+    st.write("File Uploaded Successfully!")
+
+data = {
+    "Name": ["TOM", "JACK", "POP", "HARRY"],
+    "Marks": [10, 20, 20, 25]
+}
+df = pd.DataFrame(data)
+
+st.subheader("Student Data")
+st.dataframe(df)
+
+chart_data = pd.DataFrame({
+    "Marks": [10, 20, 20, 25]
+})
+
+st.subheader("Line Chart")
+st.line_chart(chart_data)
+
+st.subheader("Bar Chart")
+st.bar_chart(chart_data)
+
+subject = ["Python", "C++", "Java"]
+marks = [20, 10, 5]
+
+fig, ax = plt.subplots()
+ax.pie(marks, labels=subject, autopct='%1.1f%%')
+
+st.subheader("Pie Chart")
+st.pyplot(fig)
