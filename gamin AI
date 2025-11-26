@@ -1,0 +1,110 @@
+import pyttsx3
+import speech_recognition as sr
+import pywhatkit
+import webbrowser
+import os
+def speak(text):
+    engine = pyttsx3.init()
+    engine.say(text)
+    engine.runAndWait()
+
+def listen():
+    mic = sr.Recognizer()
+    with sr.Microphone() as source:
+        print(" Speak now... ")
+        audio = mic.listen(source)
+
+        try:
+            text = mic.recognize_google(audio)
+            print("You said :", text)
+            return text
+        except:
+            print("Sorry, I did not understand.")
+            return ""
+
+def send_whatsapp_instant(number, message):
+    try:
+        pywhatkit.sendwhatmsg_instantly(number, message)
+        speak("Message sent successfully")
+    except Exception as e:
+        print(e)
+        speak("Message sending failed")
+
+def send_scheduled_whatsapp(number, message, hour, minutes):
+    try:
+        pywhatkit.sendwhatmsg(number, message, hour, minutes)
+        speak("Scheduled message set!")
+    except Exception as e:
+        print(e)
+        speak("Unable to schedule message!")
+
+def send_group_message(group_id, message):
+    try:
+        pywhatkit.sendwhatmsg_to_group(group_id, message)
+        speak("Group message sent!")
+    except Exception as e:
+        print(e)
+        speak("Could not send message to group!")
+
+def open_website(url):
+    try:
+        webbrowser.open_new_tab(url)
+        speak("Opening website.")
+    except:
+        speak("Unable to open website.")
+
+def open_file(path):
+    try:
+        os.startfile(path)
+        speak("Opening file.")
+    except:
+        speak("File not found.")
+speak("Welcome Shikha, how can I help you?")
+
+print("\nCommands Available:")
+print("1. Speak")
+print("2. Send WhatsApp Message")
+print("3. Send Scheduled WhatsApp Message")
+print("4. Send Group Message")
+print("5. Open Website")
+print("6. Open Folder")
+print("7. Open Notepad")
+print("8. Open Chrome")
+print("9. Exit\n")
+
+
+while True:
+    choice = input("Enter choice: ")
+
+    if choice == "1":
+        speak("Start speaking now")
+        listen()
+
+    elif choice == "2":
+        send_whatsapp_instant("+917903425602", "Hi Shikha")
+
+    elif choice == "3":
+        send_scheduled_whatsapp("+917903427602", "Hello from your assistant", 14, 48)
+
+    elif choice == "4":
+        send_group_message("GROUP_ID_HERE", "Hi Everyone")
+
+    elif choice == "5":
+        open_website("http://lms.hash13.com")
+
+    elif choice == "6":
+        open_file("C:/Users/Jibber/Documents")
+
+    elif choice == "7":
+        open_file("notepad.exe")
+
+    elif choice == "8":
+        open_file("chrome.exe")
+
+    elif choice == "9":
+        speak("Goodbye Shikha See you soon.")
+        break
+
+    else:
+        print("Invalid choice Try again.")
+        speak("Please enter a valid option.")
